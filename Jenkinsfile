@@ -50,13 +50,15 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 echo "🚀 Deploying to Kubernetes"
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                 sh '''
-                    kubectl apply -f deployment.yaml --validate=false
-                    kubectl apply -f service.yaml
+                    kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml --validate=false
+                    kubectl --kubeconfig=$KUBECONFIG apply -f service.yaml
                 '''
             }
         }
     }
+
 
     post {
         success {
