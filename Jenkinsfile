@@ -8,23 +8,23 @@ pipeline {
                 echo "Running Selenium Tests using pytest"
 
                 // Install Python dependencies
-                bat 'pip install -r requirements.txt'
+                sh 'pip install -r requirements.txt'
 
                 // Start Flask app in background
-                bat 'start /B python app.py'
+                sh 'start /B python app.py'
 
                 // Wait for the app to start
-                bat 'ping 127.0.0.1 -n 5 > nul'
+                sh 'ping 127.0.0.1 -n 5 > nul'
 
                 // Run pytest
-                bat 'pytest -v'
+                sh 'pytest -v'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker Image"
-                bat "docker build -t seleniumdemoapp:v1 ."
+                sh "docker build -t seleniumdemoapp:v1 ."
             }
         }
 
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo "Logging into Docker Hub"
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                    sh "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
                 }
             }
         }
@@ -40,16 +40,16 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 echo "Pushing Docker Image to Docker Hub"
-                bat "docker tag seleniumdemoapp:v1 shreyeah29/week7-myapp:tagname:seleniumtest"
-                bat "docker push shreyeah29/week7-myapp:seleniumtest"
+                sh "docker tag seleniumdemoapp:v1 shreyeah29/week7-myapp:tagname:seleniumtest"
+                sh "docker push shreyeah29/week7-myapp:seleniumtest"
             }
         }
 
         stage('Deploy to Kubernetes') { 
             steps { 
                 echo "Deploying to Kubernetes"
-                bat 'kubectl apply -f deployment.yaml --validate=false' 
-                bat 'kubectl apply -f service.yaml' 
+                sh 'kubectl apply -f deployment.yaml --validate=false' 
+                sh 'kubectl apply -f service.yaml' 
             } 
         }
     }
