@@ -8,7 +8,7 @@ pipeline {
                 echo "Running Selenium Tests using pytest"
 
                 // Install Python dependencies
-                sh 'pip install -r requirements.txt'
+                sh 'pip3 install -r requirements.txt'
 
                 // Start Flask app in background
                 sh 'start /B python app.py'
