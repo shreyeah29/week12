@@ -1,15 +1,23 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
-from webdriver_manager.chrome import ChromeDriverManager
 import time
 
 # Fixture for setting up and tearing down the driver
 @pytest.fixture
 def setup_teardown():
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    chrome_options = Options()
+    chrome_options.binary_location = "/usr/bin/chromium"  # ✅ Chromium path for ARM64 Debian
+    chrome_options.add_argument("--headless")              # Run without GUI
+    chrome_options.add_argument("--no-sandbox")            # Needed for Jenkins container
+    chrome_options.add_argument("--disable-dev-shm-usage") # Avoid /dev/shm issues
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+
+    driver = webdriver.Chrome(service=Service("/usr/bin/chromedriver"), options=chrome_options)
     yield driver
     driver.quit()
 
@@ -68,13 +76,9 @@ def test_valid_input(setup_teardown):
     driver.find_element(By.NAME, "pwd").send_keys("abc123")
     driver.find_element(By.NAME, "sb").click()
 
-    # Wait for redirect
     time.sleep(2)
-
-    # Verify URL
     current_url = driver.current_url
     assert "/submit" in current_url, f"Expected redirect to greeting.html, but got: {current_url}"
 
-    # Verify greeting message
     body_text = driver.find_element(By.TAG_NAME, "body").text
     assert "Hello, Alice! Welcome to the website" in body_text, f"Greeting not found or incorrect: {body_text}"
