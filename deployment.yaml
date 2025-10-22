@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seleniumtest-deployment
+  labels:
+    app: seleniumtest
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: seleniumtest
+  template:
+    metadata:
+      labels:
+        app: seleniumtest
+    spec:
+      containers:
+      - name: seleniumtest
+        image: shreyeah29/week7-myapp:seleniumtest   # ✅ your Docker image
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FLASK_ENV
+          value: production
