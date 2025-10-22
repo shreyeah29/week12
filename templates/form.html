@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form</title>
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        form {
+            display: inline-block;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 10px gray;
+        }
+        input {
+            margin: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid gray;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>Register Here</h2>
+    <!-- ✅ Fix: action should be "/" not "/submit" -->
+    <form method="POST" action="/">
+        <input type="text" name="username" placeholder="Enter Username"><br>
+        <input type="password" name="pwd" placeholder="Enter Password"><br>
+        <input type="submit" name="sb" value="Register">
+    </form>
+</body>
+</html>
